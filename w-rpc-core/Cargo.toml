@@ -1,5 +1,5 @@
 [package]
-name = "w-rpc-core"
+name = "wRPC"
 version = "0.1.0"
 authors = ["Samuel Warfield <warfield@mymail.mines.edu>"]
 edition = "2018"

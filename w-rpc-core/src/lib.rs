@@ -1,6 +1,7 @@
 mod utils;
 
 use wasm_bindgen::prelude::*;
+use 
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -9,11 +10,11 @@ use wasm_bindgen::prelude::*;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
-extern {
-    fn alert(s: &str);
+pub fn init(String moduleFileName) -> InitedModule {
+
 }
 
-#[wasm_bindgen]
-pub fn greet() {
-    alert("Hello, w-rpc-core!");
+pub struct InitiatedModule {
+    fn call(String);
+    
 }
