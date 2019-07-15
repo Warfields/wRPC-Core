@@ -1,0 +1,6 @@
+syntax = "proto3";
+
+message Result {
+    bytes Result = 1;
+    string exception = 2;
+}
