@@ -1,7 +1,8 @@
 mod utils;
+mod protos;
 
 use wasm_bindgen::prelude::*;
-use 
+use protos::init;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -9,12 +10,19 @@ use
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-#[wasm_bindgen]
-pub fn init(String moduleFileName) -> InitedModule {
-
+pub fn initModule(moduleFileName: String) -> init::Module  {
+    let module: init::Module = Default::default();
+    return module;
 }
 
+#[wasm_bindgen]
 pub struct InitiatedModule {
-    fn call(String);
-    
+    name: String,
+    functions: String,
+}
+
+impl InitiatedModule {
+    pub fn call(functName: String) -> JsValue {
+        return JsValue::from("ohea")
+    }
 }

@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+message Packager{
+    string name = 1;
+    string init_script = 2;
+    string function_wraper = 3;
+}
