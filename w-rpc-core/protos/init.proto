@@ -1,0 +1,37 @@
+// This Proto describes Modules that wRPC injests
+syntax = "proto3";
+
+// Determines how wRPC Handles types for parameters and returned values
+enum Type {
+    ERROR  = 0;
+    INT32 = 1;  //
+    INT64 = 2;  //
+    UINT32 = 3; //
+    UINT64 = 4; //
+    STRING = 5; // 
+    OPTION = 6; // See https://doc.rust-lang.org/std/option/
+    OBJECT = 7; // 
+    OTHER = 8;  // Returns a Bytes Object
+    VOID = 9;   // 
+}
+
+message Module {
+    string module_name = 1;
+    string init_script = 2;
+    string additionalBoilerPlate = 3;
+    repeated Function functions = 4;
+    string meta_data =5; 
+}
+
+message Function{
+    string name = 1;
+    Parameter parameter = 2;    
+    Type returnType = 3;
+    bytes returnedValue = 4;
+    bool canRaiseException = 5;
+}
+
+message Parameter {
+    string name = 1;
+    Type type = 2;
+}
