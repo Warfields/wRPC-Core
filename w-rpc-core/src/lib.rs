@@ -53,7 +53,10 @@ pub fn init_module(module_file_name: String) -> Result<(), JsValue> {
 
     // set any meta data
 
-    Err(JsValue::from_str("Module somehow didn't get loaded."))
+    match add_module_to_list(new_module) {
+        Err(reason) => return Err(JsValue::from_str(reason.as_str())),
+        Ok(_) => return Ok(()),
+    };
 }
 
 // Return a web assembly instance
@@ -86,6 +89,8 @@ pub fn init_pure_wasm(file_name: String, module: &mut init::Module) -> Result<()
         let array = Uint8Array::view(bytes.as_slice());
         WebAssembly::Module::new(array.as_ref())?
     };
+
+    // Todo finish packing module param
 
     Ok(())
 }
