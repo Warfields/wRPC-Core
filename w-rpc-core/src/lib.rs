@@ -53,7 +53,7 @@ pub fn init_module(module_file_name: String) -> Result<(), JsValue> {
     // set any meta data
 
     match add_module_to_list(new_module) {
-        Err(reason) => return Err(JsValue::from_str(reason.as_str())),
+        Err(reason) => return Err(JsValue::from_str(reason)),
         Ok(_) => return Ok(()),
     };
 }
@@ -94,12 +94,12 @@ pub fn init_pure_wasm(file_name: String, module: &mut RPC_Module::Module) -> Res
     Ok(())
 }
 
-fn add_module_to_list(new_module: RPC_Module::Module) -> Result <String, String> {
+fn add_module_to_list<'a>(new_module: RPC_Module::Module) -> Result <(), &'a str> {
     // TODO Make sure that there can only be one module per name
     let module_names = &GLOBAL_MODULE_NAMES.lock().unwrap().clone();
     for name in module_names {
         if name == new_module.get_module_name() {
-            return Err(String::from("Module with that name exists"))
+            return Err("Module with that name exists")
         }
     }
 
@@ -107,10 +107,10 @@ fn add_module_to_list(new_module: RPC_Module::Module) -> Result <String, String>
     &GLOBAL_MODULE_LIST.lock().unwrap().push(new_module.clone());
     &GLOBAL_MODULE_NAMES.lock().unwrap().push(String::from(new_module.get_module_name()));
 
-    Ok(String::from("Good"))
+    Ok(())
 }
 
-fn remove_module_from_list(module_name: String) -> Result <String, String>{
+fn remove_module_from_list<'a>(module_name: String) -> Result <(), &'a str>{
     // TODO Make sure that there can only be one module per name
     let module_names = &GLOBAL_MODULE_NAMES.lock().unwrap().clone();
     let mut exists: bool = false;
@@ -126,7 +126,7 @@ fn remove_module_from_list(module_name: String) -> Result <String, String>{
     }
 
     if !exists {
-        return Err(String::from("Module Does not Exist"))
+        return Err("Module Does not Exist")
     }
 
     // This next section uses a for loop to avoid making a copy of every module
@@ -134,15 +134,37 @@ fn remove_module_from_list(module_name: String) -> Result <String, String>{
     for i in 0..*num_modules {
         if &GLOBAL_MODULE_LIST.lock().unwrap()[i].get_module_name() == &&module_name.to_string() {
             &GLOBAL_MODULE_LIST.lock().unwrap().remove(i);
-            return Ok(String::from("Good"))
+            return Ok(());
         }
     }
 
-    Err(String::from("Not Good"))
+    Err("Not Good")
 }
 
-//TODO
-pub fn get_module(name: String) -> RPC_Module::Module {
+//TODO: This alone will probably be thread unsafe 
+/*
+pub unsafe fn get_module<'a> (name: String) -> Result<RPC_Module::Module, &'a str> {
+    use std::ops::DerefMut;
+    let list = &mut GLOBAL_MODULE_LIST.lock().unwrap();
+    let list = DerefMut::deref_mut(list);
 
-    return RPC_Module::Module::new();
+    for module in list {
+        if module.get_module_name() == name {
+        
+            unsafe{
+                let pointer = module as *const RPC_Module::Module;
+                let aCopy = pointer.clone();
+
+
+                // Make a ping pong JS function to trick the barrow checker
+
+                let found = *aCopy;
+
+                return Ok(found);
+            }
+        }
+    }
+
+    Err("Module not found!")
 }
+*/
