@@ -4,7 +4,7 @@ mod protos;
 
 use wasm_bindgen::prelude::*;
 use protos::init;
-use js_sys::{Function, Object, Reflect, Uint8Array, WebAssembly};
+use js_sys::{Function, Object, Reflect, Uint8Array, WebAssembly, Error};
 use wasm_bindgen::JsCast;
 use std::io::prelude::*;
 use std::fs;
@@ -27,17 +27,19 @@ lazy_static!{
 }
 
 #[wasm_bindgen]
-pub fn init_module(module_file_name: String) -> JsValue {
+pub fn init_module(module_file_name: String) -> Result<(), JsValue> {
 
 
     use init::Module;
-    #[allow(unused_mut)]
     let mut new_module = Module::new();
 
     if module_file_name.contains(".wasm"){
-        let wasm = init_pure_wasm(module_file_name);
+        init_pure_wasm(module_file_name, &mut new_module)?;
+
     } else { // check if it's a node module
 
+        // If it's not a node/JS module then return error
+        return Err(JsValue::from_str("No binaries or modules could be found"));
     }
     
     // attempt to autodetect packager
@@ -51,23 +53,23 @@ pub fn init_module(module_file_name: String) -> JsValue {
 
     // set any meta data
 
-    JsValue::FALSE
+    Err(JsValue::from_str("Module somehow didn't get loaded."))
 }
 
 // Return a web assembly instance
-pub fn init_pure_wasm(file_name: String) -> Result<WebAssembly::Instance, JsValue>{
+pub fn init_pure_wasm(file_name: String, module: &mut init::Module) -> Result<(), JsValue>{
     // get bytes from wasm
     let binary = fs::File::open(file_name);
     let mut binary = match binary {
         Ok(file) => file,
-        Err(_) => return Err(JsValue::FALSE)
+        Err(_) => return Err(JsValue::from_str("Binary file could be found"))
     };
 
     let mut bytes: Vec<u8> = Vec::new();
     let readsucess = binary.read_to_end(bytes.as_mut());
 
     match readsucess {
-        Err(_) => return Err(JsValue::FALSE),
+        Err(_) => return Err(JsValue::from_str("Binary file could read, were the permission set right?")),
         Ok(_) => (),
     };
 
@@ -85,7 +87,7 @@ pub fn init_pure_wasm(file_name: String) -> Result<WebAssembly::Instance, JsValu
         WebAssembly::Module::new(array.as_ref())?
     };
 
-    Ok(WebAssembly::Instance::new(&a, &Object::new())?)
+    Ok(())
 }
 
 fn add_module_to_list(new_module: init::Module) -> Result <String, String> {
