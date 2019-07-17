@@ -5,7 +5,7 @@ fn main() {
 
     protoc_rust::run(protoc_rust::Args {
         out_dir: "src/protos",
-        input: &["protos/init.proto", "protos/result.proto", "protos/packager.proto"],
+        input: &["protos/RPC_Module.proto", "protos/result.proto", "protos/packager.proto"],
         includes: &["protos"],
         customize: Customize {
         ..Default::default()

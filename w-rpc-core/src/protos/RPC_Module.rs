@@ -17,7 +17,7 @@
 #![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
-//! Generated file from `init.proto`
+//! Generated file from `RPC_Module.proto`
 
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
@@ -984,22 +984,22 @@ impl ::protobuf::reflect::ProtobufValue for Type {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\ninit.proto\"\xc6\x01\n\x06Module\x12\x1f\n\x0bmodule_name\x18\x01\
-    \x20\x01(\tR\nmoduleName\x12\x1f\n\x0binit_script\x18\x02\x20\x01(\tR\ni\
-    nitScript\x124\n\x15additionalBoilerPlate\x18\x03\x20\x01(\tR\x15additio\
-    nalBoilerPlate\x12'\n\tfunctions\x18\x04\x20\x03(\x0b2\t.FunctionR\tfunc\
-    tions\x12\x1b\n\tmeta_data\x18\x05\x20\x01(\tR\x08metaData\"\xc3\x01\n\
-    \x08Function\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12(\n\tparam\
-    eter\x18\x02\x20\x01(\x0b2\n.ParameterR\tparameter\x12%\n\nreturnType\
-    \x18\x03\x20\x01(\x0e2\x05.TypeR\nreturnType\x12$\n\rreturnedValue\x18\
-    \x04\x20\x01(\x0cR\rreturnedValue\x12,\n\x11canRaiseException\x18\x05\
-    \x20\x01(\x08R\x11canRaiseException\":\n\tParameter\x12\x12\n\x04name\
-    \x18\x01\x20\x01(\tR\x04name\x12\x19\n\x04type\x18\x02\x20\x01(\x0e2\x05\
-    .TypeR\x04type*x\n\x04Type\x12\t\n\x05ERROR\x10\0\x12\t\n\x05INT32\x10\
-    \x01\x12\t\n\x05INT64\x10\x02\x12\n\n\x06UINT32\x10\x03\x12\n\n\x06UINT6\
-    4\x10\x04\x12\n\n\x06STRING\x10\x05\x12\n\n\x06OPTION\x10\x06\x12\n\n\
-    \x06OBJECT\x10\x07\x12\t\n\x05OTHER\x10\x08\x12\x08\n\x04VOID\x10\tb\x06\
-    proto3\
+    \n\x10RPC_Module.proto\"\xc6\x01\n\x06Module\x12\x1f\n\x0bmodule_name\
+    \x18\x01\x20\x01(\tR\nmoduleName\x12\x1f\n\x0binit_script\x18\x02\x20\
+    \x01(\tR\ninitScript\x124\n\x15additionalBoilerPlate\x18\x03\x20\x01(\tR\
+    \x15additionalBoilerPlate\x12'\n\tfunctions\x18\x04\x20\x03(\x0b2\t.Func\
+    tionR\tfunctions\x12\x1b\n\tmeta_data\x18\x05\x20\x01(\tR\x08metaData\"\
+    \xc3\x01\n\x08Function\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12\
+    (\n\tparameter\x18\x02\x20\x01(\x0b2\n.ParameterR\tparameter\x12%\n\nret\
+    urnType\x18\x03\x20\x01(\x0e2\x05.TypeR\nreturnType\x12$\n\rreturnedValu\
+    e\x18\x04\x20\x01(\x0cR\rreturnedValue\x12,\n\x11canRaiseException\x18\
+    \x05\x20\x01(\x08R\x11canRaiseException\":\n\tParameter\x12\x12\n\x04nam\
+    e\x18\x01\x20\x01(\tR\x04name\x12\x19\n\x04type\x18\x02\x20\x01(\x0e2\
+    \x05.TypeR\x04type*x\n\x04Type\x12\t\n\x05ERROR\x10\0\x12\t\n\x05INT32\
+    \x10\x01\x12\t\n\x05INT64\x10\x02\x12\n\n\x06UINT32\x10\x03\x12\n\n\x06U\
+    INT64\x10\x04\x12\n\n\x06STRING\x10\x05\x12\n\n\x06OPTION\x10\x06\x12\n\
+    \n\x06OBJECT\x10\x07\x12\t\n\x05OTHER\x10\x08\x12\x08\n\x04VOID\x10\tb\
+    \x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {

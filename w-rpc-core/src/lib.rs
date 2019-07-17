@@ -3,9 +3,8 @@ mod utils;
 mod protos;
 
 use wasm_bindgen::prelude::*;
-use protos::init;
-use js_sys::{Function, Object, Reflect, Uint8Array, WebAssembly, Error};
-use wasm_bindgen::JsCast;
+use protos::RPC_Module;
+use js_sys::{Uint8Array, WebAssembly};
 use std::io::prelude::*;
 use std::fs;
 
@@ -22,7 +21,7 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 // Create Global Module list
 lazy_static!{
-    static ref GLOBAL_MODULE_LIST: Mutex<Vec::<init::Module>> = Mutex::new(Vec::<init::Module>::new());
+    static ref GLOBAL_MODULE_LIST: Mutex<Vec::<RPC_Module::Module>> = Mutex::new(Vec::<RPC_Module::Module>::new());
     static ref GLOBAL_MODULE_NAMES: Mutex<Vec::<String>> = Mutex::new(Vec::<String>::new());
 }
 
@@ -30,7 +29,7 @@ lazy_static!{
 pub fn init_module(module_file_name: String) -> Result<(), JsValue> {
 
 
-    use init::Module;
+    use RPC_Module::Module;
     let mut new_module = Module::new();
 
     if module_file_name.contains(".wasm"){
@@ -60,7 +59,7 @@ pub fn init_module(module_file_name: String) -> Result<(), JsValue> {
 }
 
 // Return a web assembly instance
-pub fn init_pure_wasm(file_name: String, module: &mut init::Module) -> Result<(), JsValue>{
+pub fn init_pure_wasm(file_name: String, module: &mut RPC_Module::Module) -> Result<(), JsValue>{
     // get bytes from wasm
     let binary = fs::File::open(file_name);
     let mut binary = match binary {
@@ -69,9 +68,9 @@ pub fn init_pure_wasm(file_name: String, module: &mut init::Module) -> Result<()
     };
 
     let mut bytes: Vec<u8> = Vec::new();
-    let readsucess = binary.read_to_end(bytes.as_mut());
+    let read_success = binary.read_to_end(bytes.as_mut());
 
-    match readsucess {
+    match read_success {
         Err(_) => return Err(JsValue::from_str("Binary file could read, were the permission set right?")),
         Ok(_) => (),
     };
@@ -85,7 +84,7 @@ pub fn init_pure_wasm(file_name: String, module: &mut init::Module) -> Result<()
     // As a result, after `Uint8Array::view` we have to be very careful not to
     // do any memory allocations before it's dropped.
 
-    let a = unsafe {
+    let wasm = unsafe {
         let array = Uint8Array::view(bytes.as_slice());
         WebAssembly::Module::new(array.as_ref())?
     };
@@ -95,7 +94,7 @@ pub fn init_pure_wasm(file_name: String, module: &mut init::Module) -> Result<()
     Ok(())
 }
 
-fn add_module_to_list(new_module: init::Module) -> Result <String, String> {
+fn add_module_to_list(new_module: RPC_Module::Module) -> Result <String, String> {
     // TODO Make sure that there can only be one module per name
     let module_names = &GLOBAL_MODULE_NAMES.lock().unwrap().clone();
     for name in module_names {
@@ -143,7 +142,7 @@ fn remove_module_from_list(module_name: String) -> Result <String, String>{
 }
 
 //TODO
-pub fn get_module(name: String) -> init::Module {
+pub fn get_module(name: String) -> RPC_Module::Module {
 
-    return init::Module::new();
+    return RPC_Module::Module::new();
 }
