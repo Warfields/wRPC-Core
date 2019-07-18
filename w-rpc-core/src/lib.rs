@@ -12,6 +12,12 @@ use std::fs;
 extern crate lazy_static;
 use std::sync::Mutex;
 
+// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
+// allocator.
+#[cfg(feature = "wee_alloc")]
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
 // Since the RPC_Module.rs's are generated from proto files the rpc call fn is
 // implemented here.
 impl RPC_Module::Module {
@@ -22,17 +28,29 @@ impl RPC_Module::Module {
     }
 }
 
-
-// When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
-// allocator.
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 // Create Global Module list
 lazy_static!{
     static ref GLOBAL_MODULE_LIST: Mutex<Vec::<RPC_Module::Module>> = Mutex::new(Vec::<RPC_Module::Module>::new());
     static ref GLOBAL_MODULE_NAMES: Mutex<Vec::<String>> = Mutex::new(Vec::<String>::new());
+}
+
+// To get rid of the borrowing and lifetime problems that making this a
+// function causes.
+macro_rules! get_module {
+    ($name:expr) => {
+        use std::ops::DerefMut;
+        let list = &mut GLOBAL_MODULE_LIST.lock().unwrap();
+        let list = DerefMut::deref_mut(list);
+        let mut loop_num: u32 = 0;
+
+        for item in list{
+            if item.get_module_name() == $name {
+                break;
+            }
+            loop_num += 1
+        }
+        let current_module = &GLOBAL_MODULE_LIST.lock().unwrap()[loop_num as usize];
+    };
 }
 
 #[wasm_bindgen]
@@ -98,10 +116,17 @@ pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
     // get new module
 
     get_module!(file_name);
+
     // add wasm and how to get to it
 
     Ok(())
     
+}
+
+//Todo
+#[wasm_bindgen]
+pub fn init_proto() {
+
 }
 
 fn create_module(name:&String) -> Result <(), &'static str> {
@@ -121,7 +146,6 @@ fn create_module(name:&String) -> Result <(), &'static str> {
 }
 
 fn remove_module_from_list<'a>(module_name: String) -> Result <(), &'a str>{
-    // TODO Make sure that there can only be one module per name
     let module_names = &GLOBAL_MODULE_NAMES.lock().unwrap().clone();
     let mut exists: bool = false;
     let mut index = 0;

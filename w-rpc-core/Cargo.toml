@@ -4,6 +4,9 @@ version = "0.1.0"
 authors = ["Samuel Warfield <warfield@mymail.mines.edu>"]
 edition = "2018"
 build = "build.rs"
+repository = "https://github.com/Warfields/wRPC-Core"
+description = "RPC Framework for Webassembly"
+lisence = "MIT and Apache License 2.0"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

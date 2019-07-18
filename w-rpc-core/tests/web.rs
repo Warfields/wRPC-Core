@@ -12,6 +12,11 @@ fn pass() {
 }
 
 // Load and test pure wasm binary
+#[wasm_bindgen_test]
+fn test_binary(){
+    
+}
+
 // Load and test wat
 // Load and test Enscripten module
 // Load and test wasm-pack module
