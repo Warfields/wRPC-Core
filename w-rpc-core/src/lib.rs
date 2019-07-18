@@ -28,14 +28,12 @@ lazy_static!{
 #[wasm_bindgen]
 pub fn init_module(module_file_name: String) -> Result<(), JsValue> {
 
-
-    use RPC_Module::Module;
-    let mut new_module = Module::new();
-
-    if module_file_name.contains(".wasm"){
-        init_pure_wasm(module_file_name, &mut new_module)?;
+    if module_file_name.contains(".wasm") {
+        init_pure_wasm(&module_file_name)
 
     } else { // check if it's a node module
+
+        // search all modules for one wit
 
         // If it's not a node/JS module then return error
         return Err(JsValue::from_str("No binaries or modules could be found"));
@@ -51,17 +49,12 @@ pub fn init_module(module_file_name: String) -> Result<(), JsValue> {
     // set up functions
 
     // set any meta data
-
-    match add_module_to_list(new_module) {
-        Err(reason) => return Err(JsValue::from_str(reason)),
-        Ok(_) => return Ok(()),
-    };
 }
 
 // Return a web assembly instance
-pub fn init_pure_wasm(file_name: String, module: &mut RPC_Module::Module) -> Result<(), JsValue>{
+pub fn init_pure_wasm(file_name: &String) -> Result<(), JsValue>{
     // get bytes from wasm
-    let binary = fs::File::open(file_name);
+    let binary = fs::File::open(&file_name);
     let mut binary = match binary {
         Ok(file) => file,
         Err(_) => return Err(JsValue::from_str("Binary file could be found"))
@@ -94,18 +87,22 @@ pub fn init_pure_wasm(file_name: String, module: &mut RPC_Module::Module) -> Res
     Ok(())
 }
 
-fn add_module_to_list<'a>(new_module: RPC_Module::Module) -> Result <(), &'a str> {
+fn create_module(name:&String) -> Result <(), &'static str> {
     // TODO Make sure that there can only be one module per name
     let module_names = &GLOBAL_MODULE_NAMES.lock().unwrap().clone();
-    for name in module_names {
-        if name == new_module.get_module_name() {
+    for existing_name in module_names {
+        if *name == *existing_name {
             return Err("Module with that name exists")
         }
     }
 
+    let new_module = RPC_Module::Module::new();
+
     // Add to global
-    &GLOBAL_MODULE_LIST.lock().unwrap().push(new_module.clone());
-    &GLOBAL_MODULE_NAMES.lock().unwrap().push(String::from(new_module.get_module_name()));
+    &GLOBAL_MODULE_LIST.lock().unwrap().push(new_module);
+    &GLOBAL_MODULE_NAMES.lock().unwrap().push((*name).clone());
+
+    create_module(name)?;
 
     Ok(())
 }
