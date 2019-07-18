@@ -83,8 +83,10 @@ pub fn init_pure_wasm(file_name: &String) -> Result<(), JsValue>{
     };
 
     // Todo finish packing module param
+    create_module(file_name)?;
 
     Ok(())
+    
 }
 
 fn create_module(name:&String) -> Result <(), &'static str> {
@@ -101,9 +103,6 @@ fn create_module(name:&String) -> Result <(), &'static str> {
     // Add to global
     &GLOBAL_MODULE_LIST.lock().unwrap().push(new_module);
     &GLOBAL_MODULE_NAMES.lock().unwrap().push((*name).clone());
-
-    create_module(name)?;
-
     Ok(())
 }
 
