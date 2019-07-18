@@ -12,6 +12,15 @@ use std::fs;
 extern crate lazy_static;
 use std::sync::Mutex;
 
+// Since the RPC_Module.rs's are generated from proto files the rpc call fn is
+// implemented here.
+impl RPC_Module::Module {
+    pub fn fn_call(fn_name: String) -> Result<JsValue, &'static str>{
+
+        Err("Not Implimented yet!")
+    }
+}
+
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
