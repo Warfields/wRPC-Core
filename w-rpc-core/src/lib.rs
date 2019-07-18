@@ -15,6 +15,7 @@ use std::sync::Mutex;
 // Since the RPC_Module.rs's are generated from proto files the rpc call fn is
 // implemented here.
 impl RPC_Module::Module {
+    // Macro?
     pub fn fn_call(fn_name: String) -> Result<JsValue, &'static str>{
 
         Err("Not Implimented yet!")
@@ -38,7 +39,7 @@ lazy_static!{
 pub fn init_module(module_file_name: String) -> Result<(), JsValue> {
 
     if module_file_name.contains(".wasm") {
-        init_pure_wasm(&module_file_name)
+        init_pure_wasm(module_file_name)
 
     } else { // check if it's a node module
 
@@ -61,7 +62,8 @@ pub fn init_module(module_file_name: String) -> Result<(), JsValue> {
 }
 
 // Return a web assembly instance
-pub fn init_pure_wasm(file_name: &String) -> Result<(), JsValue>{
+#[wasm_bindgen]
+pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
     // get bytes from wasm
     let binary = fs::File::open(&file_name);
     let mut binary = match binary {
@@ -91,15 +93,18 @@ pub fn init_pure_wasm(file_name: &String) -> Result<(), JsValue>{
         WebAssembly::Module::new(array.as_ref())?
     };
 
-    // Todo finish packing module param
-    create_module(file_name)?;
+    // Todo finish packing module params
+    create_module(&file_name)?;
+    // get new module
+
+    get_module!(file_name);
+    // add wasm and how to get to it
 
     Ok(())
     
 }
 
 fn create_module(name:&String) -> Result <(), &'static str> {
-    // TODO Make sure that there can only be one module per name
     let module_names = &GLOBAL_MODULE_NAMES.lock().unwrap().clone();
     for existing_name in module_names {
         if *name == *existing_name {
@@ -107,7 +112,7 @@ fn create_module(name:&String) -> Result <(), &'static str> {
         }
     }
 
-    let new_module = RPC_Module::Module::new();
+    let mut new_module = RPC_Module::Module::new();
 
     // Add to global
     &GLOBAL_MODULE_LIST.lock().unwrap().push(new_module);
@@ -145,31 +150,3 @@ fn remove_module_from_list<'a>(module_name: String) -> Result <(), &'a str>{
 
     Err("Not Good")
 }
-
-//TODO: This alone will probably be thread unsafe 
-/*
-pub unsafe fn get_module<'a> (name: String) -> Result<RPC_Module::Module, &'a str> {
-    use std::ops::DerefMut;
-    let list = &mut GLOBAL_MODULE_LIST.lock().unwrap();
-    let list = DerefMut::deref_mut(list);
-
-    for module in list {
-        if module.get_module_name() == name {
-        
-            unsafe{
-                let pointer = module as *const RPC_Module::Module;
-                let aCopy = pointer.clone();
-
-
-                // Make a ping pong JS function to trick the barrow checker
-
-                let found = *aCopy;
-
-                return Ok(found);
-            }
-        }
-    }
-
-    Err("Module not found!")
-}
-*/
