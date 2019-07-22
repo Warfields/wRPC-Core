@@ -47,6 +47,23 @@ macro_rules! get_module {
     };
 }
 
+macro_rules! get_module_mut {
+    ($name:expr, $returned_var:ident) => {
+        use std::ops::DerefMut;
+        let list = &mut GLOBAL_MODULE_LIST.lock().unwrap();
+        let list = DerefMut::deref_mut(list);
+        let mut loop_num: u32 = 0;
+
+        for item in list{
+            if item.get_module_name() == $name {
+                break;
+            }
+            loop_num += 1
+        }
+        let $returned_var = &mut GLOBAL_MODULE_LIST.lock().unwrap()[loop_num as usize];
+    };
+}
+
 #[wasm_bindgen]
 pub fn init_file(module_file_name: String) -> Result<(), JsValue> {
 
@@ -110,9 +127,11 @@ pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
     get_module!(file_name, ohea);
     println!("{}", ohea.get_module_name());
 
+    Err(JsValue::from_str("Not implemented!"))
+
     // add wasm and how to get to it
 
-    Ok(())
+
     
 }
 
@@ -120,8 +139,7 @@ pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
 #[wasm_bindgen]
 pub fn init_proto(buf: Vec<u8>) -> Result<(), JsValue>{
     // https://github.com/stepancheg/rust-protobuf/pull/118/commits/e501dc72a74fc8939c7696a75961ab2bafad215f
-    let mut read_buf = std::io::Cursor::new(buf);
-    let result = protobuf::parse_from_reader::<RPC_Module::Module>(&mut read_buf);
+    let result = protobuf::parse_from_bytes(&buf);
 
     match result {
         Ok(proto) => {
@@ -198,6 +216,6 @@ fn remove_module_from_list<'a>(module_name: String) -> Result <(), &'a str>{
 
 #[wasm_bindgen]
 pub fn rpc_call(module: String, function: String, params: Vec<JsValue>) -> Result<JsValue, JsValue> {
-    get_module!(module, callee);
+    get_module_mut!(module, callee);
     callee.fn_call(function, params)
 }

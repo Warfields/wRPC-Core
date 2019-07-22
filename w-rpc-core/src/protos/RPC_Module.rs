@@ -416,7 +416,7 @@ impl ::protobuf::reflect::ProtobufValue for Module {
 pub struct Function {
     // message fields
     pub name: ::std::string::String,
-    pub parameter: ::protobuf::SingularPtrField<Parameter>,
+    pub parameter: ::protobuf::RepeatedField<Parameter>,
     pub returnType: Type,
     pub returnedValue: ::std::vec::Vec<u8>,
     pub canRaiseException: bool,
@@ -462,37 +462,29 @@ impl Function {
         ::std::mem::replace(&mut self.name, ::std::string::String::new())
     }
 
-    // .Parameter parameter = 2;
+    // repeated .Parameter parameter = 2;
 
 
-    pub fn get_parameter(&self) -> &Parameter {
-        self.parameter.as_ref().unwrap_or_else(|| Parameter::default_instance())
+    pub fn get_parameter(&self) -> &[Parameter] {
+        &self.parameter
     }
     pub fn clear_parameter(&mut self) {
         self.parameter.clear();
     }
 
-    pub fn has_parameter(&self) -> bool {
-        self.parameter.is_some()
-    }
-
     // Param is passed by value, moved
-    pub fn set_parameter(&mut self, v: Parameter) {
-        self.parameter = ::protobuf::SingularPtrField::some(v);
+    pub fn set_parameter(&mut self, v: ::protobuf::RepeatedField<Parameter>) {
+        self.parameter = v;
     }
 
     // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_parameter(&mut self) -> &mut Parameter {
-        if self.parameter.is_none() {
-            self.parameter.set_default();
-        }
-        self.parameter.as_mut().unwrap()
+    pub fn mut_parameter(&mut self) -> &mut ::protobuf::RepeatedField<Parameter> {
+        &mut self.parameter
     }
 
     // Take field
-    pub fn take_parameter(&mut self) -> Parameter {
-        self.parameter.take().unwrap_or_else(|| Parameter::new())
+    pub fn take_parameter(&mut self) -> ::protobuf::RepeatedField<Parameter> {
+        ::std::mem::replace(&mut self.parameter, ::protobuf::RepeatedField::new())
     }
 
     // .Type returnType = 3;
@@ -570,7 +562,7 @@ impl ::protobuf::Message for Function {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.parameter)?;
+                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.parameter)?;
                 },
                 3 => {
                     ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.returnType, 3, &mut self.unknown_fields)?
@@ -600,10 +592,10 @@ impl ::protobuf::Message for Function {
         if !self.name.is_empty() {
             my_size += ::protobuf::rt::string_size(1, &self.name);
         }
-        if let Some(ref v) = self.parameter.as_ref() {
-            let len = v.compute_size();
+        for value in &self.parameter {
+            let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        }
+        };
         if self.returnType != Type::ERROR {
             my_size += ::protobuf::rt::enum_size(3, self.returnType);
         }
@@ -622,11 +614,11 @@ impl ::protobuf::Message for Function {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
-        if let Some(ref v) = self.parameter.as_ref() {
+        for v in &self.parameter {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        }
+        };
         if self.returnType != Type::ERROR {
             os.write_enum(3, self.returnType.value())?;
         }
@@ -683,7 +675,7 @@ impl ::protobuf::Message for Function {
                     |m: &Function| { &m.name },
                     |m: &mut Function| { &mut m.name },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Parameter>>(
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Parameter>>(
                     "parameter",
                     |m: &Function| { &m.parameter },
                     |m: &mut Function| { &mut m.parameter },
@@ -751,6 +743,7 @@ pub struct Parameter {
     // message fields
     pub name: ::std::string::String,
     pub field_type: Type,
+    pub data: ::std::vec::Vec<u8>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
@@ -807,6 +800,32 @@ impl Parameter {
     pub fn set_field_type(&mut self, v: Type) {
         self.field_type = v;
     }
+
+    // bytes data = 3;
+
+
+    pub fn get_data(&self) -> &[u8] {
+        &self.data
+    }
+    pub fn clear_data(&mut self) {
+        self.data.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_data(&mut self, v: ::std::vec::Vec<u8>) {
+        self.data = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_data(&mut self) -> &mut ::std::vec::Vec<u8> {
+        &mut self.data
+    }
+
+    // Take field
+    pub fn take_data(&mut self) -> ::std::vec::Vec<u8> {
+        ::std::mem::replace(&mut self.data, ::std::vec::Vec::new())
+    }
 }
 
 impl ::protobuf::Message for Parameter {
@@ -823,6 +842,9 @@ impl ::protobuf::Message for Parameter {
                 },
                 2 => {
                     ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.field_type, 2, &mut self.unknown_fields)?
+                },
+                3 => {
+                    ::protobuf::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.data)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -842,6 +864,9 @@ impl ::protobuf::Message for Parameter {
         if self.field_type != Type::ERROR {
             my_size += ::protobuf::rt::enum_size(2, self.field_type);
         }
+        if !self.data.is_empty() {
+            my_size += ::protobuf::rt::bytes_size(3, &self.data);
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -853,6 +878,9 @@ impl ::protobuf::Message for Parameter {
         }
         if self.field_type != Type::ERROR {
             os.write_enum(2, self.field_type.value())?;
+        }
+        if !self.data.is_empty() {
+            os.write_bytes(3, &self.data)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -906,6 +934,11 @@ impl ::protobuf::Message for Parameter {
                     |m: &Parameter| { &m.field_type },
                     |m: &mut Parameter| { &mut m.field_type },
                 ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+                    "data",
+                    |m: &Parameter| { &m.data },
+                    |m: &mut Parameter| { &mut m.data },
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<Parameter>(
                     "Parameter",
                     fields,
@@ -930,6 +963,7 @@ impl ::protobuf::Clear for Parameter {
     fn clear(&mut self) {
         self.name.clear();
         self.field_type = Type::ERROR;
+        self.data.clear();
         self.unknown_fields.clear();
     }
 }
@@ -1033,16 +1067,16 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     tionR\tfunctions\x12\x1b\n\tmeta_data\x18\x05\x20\x01(\tR\x08metaData\
     \x12\x1a\n\x08packager\x18\x06\x20\x01(\tR\x08packager\"\xc3\x01\n\x08Fu\
     nction\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12(\n\tparameter\
-    \x18\x02\x20\x01(\x0b2\n.ParameterR\tparameter\x12%\n\nreturnType\x18\
+    \x18\x02\x20\x03(\x0b2\n.ParameterR\tparameter\x12%\n\nreturnType\x18\
     \x03\x20\x01(\x0e2\x05.TypeR\nreturnType\x12$\n\rreturnedValue\x18\x04\
     \x20\x01(\x0cR\rreturnedValue\x12,\n\x11canRaiseException\x18\x05\x20\
-    \x01(\x08R\x11canRaiseException\":\n\tParameter\x12\x12\n\x04name\x18\
+    \x01(\x08R\x11canRaiseException\"N\n\tParameter\x12\x12\n\x04name\x18\
     \x01\x20\x01(\tR\x04name\x12\x19\n\x04type\x18\x02\x20\x01(\x0e2\x05.Typ\
-    eR\x04type*x\n\x04Type\x12\t\n\x05ERROR\x10\0\x12\t\n\x05INT32\x10\x01\
-    \x12\t\n\x05INT64\x10\x02\x12\n\n\x06UINT32\x10\x03\x12\n\n\x06UINT64\
-    \x10\x04\x12\n\n\x06STRING\x10\x05\x12\n\n\x06OPTION\x10\x06\x12\n\n\x06\
-    OBJECT\x10\x07\x12\t\n\x05OTHER\x10\x08\x12\x08\n\x04VOID\x10\tb\x06prot\
-    o3\
+    eR\x04type\x12\x12\n\x04data\x18\x03\x20\x01(\x0cR\x04data*x\n\x04Type\
+    \x12\t\n\x05ERROR\x10\0\x12\t\n\x05INT32\x10\x01\x12\t\n\x05INT64\x10\
+    \x02\x12\n\n\x06UINT32\x10\x03\x12\n\n\x06UINT64\x10\x04\x12\n\n\x06STRI\
+    NG\x10\x05\x12\n\n\x06OPTION\x10\x06\x12\n\n\x06OBJECT\x10\x07\x12\t\n\
+    \x05OTHER\x10\x08\x12\x08\n\x04VOID\x10\tb\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
