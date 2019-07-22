@@ -1,4 +1,6 @@
+#![allow(non_snake_case)]
 #![allow(dead_code)]
+
 mod utils;
 mod protos;
 
@@ -30,14 +32,16 @@ impl RPC_Module::Module {
 
 // Create Global Module list
 lazy_static!{
-    static ref GLOBAL_MODULE_LIST: Mutex<Vec::<RPC_Module::Module>> = Mutex::new(Vec::<RPC_Module::Module>::new());
-    static ref GLOBAL_MODULE_NAMES: Mutex<Vec::<String>> = Mutex::new(Vec::<String>::new());
+    static ref GLOBAL_MODULE_LIST: Mutex<Vec::<RPC_Module::Module>>
+        = Mutex::new(Vec::<RPC_Module::Module>::new());
+    static ref GLOBAL_MODULE_NAMES: Mutex<Vec::<String>> 
+        = Mutex::new(Vec::<String>::new());
 }
 
 // To get rid of the borrowing and lifetime problems that making this a
-// function causes.
+// function causes it is a macro so that the get is done in the same scope. 
 macro_rules! get_module {
-    ($name:expr) => {
+    ($name:expr, $returned_var:ident) => {
         use std::ops::DerefMut;
         let list = &mut GLOBAL_MODULE_LIST.lock().unwrap();
         let list = DerefMut::deref_mut(list);
@@ -49,22 +53,20 @@ macro_rules! get_module {
             }
             loop_num += 1
         }
-        let current_module = &GLOBAL_MODULE_LIST.lock().unwrap()[loop_num as usize];
+        let $returned_var = &GLOBAL_MODULE_LIST.lock().unwrap()[loop_num as usize];
     };
 }
 
 #[wasm_bindgen]
-pub fn init_module(module_file_name: String) -> Result<(), JsValue> {
+pub fn init_file(module_file_name: String) -> Result<(), JsValue> {
 
     if module_file_name.contains(".wasm") {
         init_pure_wasm(module_file_name)
 
-    } else { // check if it's a node module
-
-        // search all modules for one wit
-
-        // If it's not a node/JS module then return error
-        return Err(JsValue::from_str("No binaries or modules could be found"));
+    } else if module_file_name.contains(".js"){ // check if it's a node module
+        Err(JsValue::from_str("No binaries or modules could be found"))
+    } else {
+        Err(JsValue::from_str("No binaries or modules could be found"))
     }
     
     // attempt to autodetect packager
@@ -115,7 +117,8 @@ pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
     create_module(&file_name)?;
     // get new module
 
-    get_module!(file_name);
+    get_module!(file_name, ohea);
+    println!("{}", ohea.get_module_name());
 
     // add wasm and how to get to it
 
@@ -126,7 +129,7 @@ pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
 //Todo
 #[wasm_bindgen]
 pub fn init_proto() {
-
+    // https://github.com/stepancheg/rust-protobuf/pull/118/commits/e501dc72a74fc8939c7696a75961ab2bafad215f
 }
 
 fn create_module(name:&String) -> Result <(), &'static str> {
