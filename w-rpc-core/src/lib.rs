@@ -128,8 +128,36 @@ pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
 
 //Todo
 #[wasm_bindgen]
-pub fn init_proto() {
+pub fn init_proto(buf: Vec<u8>) -> Result<(), JsValue>{
     // https://github.com/stepancheg/rust-protobuf/pull/118/commits/e501dc72a74fc8939c7696a75961ab2bafad215f
+    let mut read_buf = std::io::Cursor::new(buf);
+    let result = protobuf::parse_from_reader::<RPC_Module::Module>(&mut read_buf);
+
+    match result {
+        Ok(proto) => {
+            // Add module
+            add_module(proto)?;
+            Ok(())
+        }
+        Err(e) => return Err(JsValue::from_str("Module Protobuf couldn't be read!"))
+    }
+}
+
+fn add_module(module: RPC_Module::Module ) -> Result <(), &'static str> {
+    let name = module.get_module_name().clone();
+
+    let module_names = &GLOBAL_MODULE_NAMES.lock().unwrap().clone();
+    for existing_name in module_names {
+        if *name == *existing_name {
+            return Err("Module with that name exists")
+        }
+    }
+
+    // Add to global
+    &GLOBAL_MODULE_NAMES.lock().unwrap().push(name.to_string().clone());
+    &GLOBAL_MODULE_LIST.lock().unwrap().push(module);
+
+    Ok(())
 }
 
 fn create_module(name:&String) -> Result <(), &'static str> {
@@ -140,7 +168,7 @@ fn create_module(name:&String) -> Result <(), &'static str> {
         }
     }
 
-    let mut new_module = RPC_Module::Module::new();
+    let new_module = RPC_Module::Module::new();
 
     // Add to global
     &GLOBAL_MODULE_LIST.lock().unwrap().push(new_module);
