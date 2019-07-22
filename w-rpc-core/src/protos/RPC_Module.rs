@@ -34,6 +34,7 @@ pub struct Module {
     pub additionalBoilerPlate: ::std::string::String,
     pub functions: ::protobuf::RepeatedField<Function>,
     pub meta_data: ::std::string::String,
+    pub packager: ::std::string::String,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
@@ -178,6 +179,32 @@ impl Module {
     pub fn take_meta_data(&mut self) -> ::std::string::String {
         ::std::mem::replace(&mut self.meta_data, ::std::string::String::new())
     }
+
+    // string packager = 6;
+
+
+    pub fn get_packager(&self) -> &str {
+        &self.packager
+    }
+    pub fn clear_packager(&mut self) {
+        self.packager.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_packager(&mut self, v: ::std::string::String) {
+        self.packager = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_packager(&mut self) -> &mut ::std::string::String {
+        &mut self.packager
+    }
+
+    // Take field
+    pub fn take_packager(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.packager, ::std::string::String::new())
+    }
 }
 
 impl ::protobuf::Message for Module {
@@ -209,6 +236,9 @@ impl ::protobuf::Message for Module {
                 5 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.meta_data)?;
                 },
+                6 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.packager)?;
+                },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
@@ -237,6 +267,9 @@ impl ::protobuf::Message for Module {
         if !self.meta_data.is_empty() {
             my_size += ::protobuf::rt::string_size(5, &self.meta_data);
         }
+        if !self.packager.is_empty() {
+            my_size += ::protobuf::rt::string_size(6, &self.packager);
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -259,6 +292,9 @@ impl ::protobuf::Message for Module {
         };
         if !self.meta_data.is_empty() {
             os.write_string(5, &self.meta_data)?;
+        }
+        if !self.packager.is_empty() {
+            os.write_string(6, &self.packager)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -327,6 +363,11 @@ impl ::protobuf::Message for Module {
                     |m: &Module| { &m.meta_data },
                     |m: &mut Module| { &mut m.meta_data },
                 ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                    "packager",
+                    |m: &Module| { &m.packager },
+                    |m: &mut Module| { &mut m.packager },
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<Module>(
                     "Module",
                     fields,
@@ -354,6 +395,7 @@ impl ::protobuf::Clear for Module {
         self.additionalBoilerPlate.clear();
         self.functions.clear();
         self.meta_data.clear();
+        self.packager.clear();
         self.unknown_fields.clear();
     }
 }
@@ -984,22 +1026,23 @@ impl ::protobuf::reflect::ProtobufValue for Type {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\x10RPC_Module.proto\"\xc6\x01\n\x06Module\x12\x1f\n\x0bmodule_name\
+    \n\x10RPC_Module.proto\"\xe2\x01\n\x06Module\x12\x1f\n\x0bmodule_name\
     \x18\x01\x20\x01(\tR\nmoduleName\x12\x1f\n\x0binit_script\x18\x02\x20\
     \x01(\tR\ninitScript\x124\n\x15additionalBoilerPlate\x18\x03\x20\x01(\tR\
     \x15additionalBoilerPlate\x12'\n\tfunctions\x18\x04\x20\x03(\x0b2\t.Func\
-    tionR\tfunctions\x12\x1b\n\tmeta_data\x18\x05\x20\x01(\tR\x08metaData\"\
-    \xc3\x01\n\x08Function\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12\
-    (\n\tparameter\x18\x02\x20\x01(\x0b2\n.ParameterR\tparameter\x12%\n\nret\
-    urnType\x18\x03\x20\x01(\x0e2\x05.TypeR\nreturnType\x12$\n\rreturnedValu\
-    e\x18\x04\x20\x01(\x0cR\rreturnedValue\x12,\n\x11canRaiseException\x18\
-    \x05\x20\x01(\x08R\x11canRaiseException\":\n\tParameter\x12\x12\n\x04nam\
-    e\x18\x01\x20\x01(\tR\x04name\x12\x19\n\x04type\x18\x02\x20\x01(\x0e2\
-    \x05.TypeR\x04type*x\n\x04Type\x12\t\n\x05ERROR\x10\0\x12\t\n\x05INT32\
-    \x10\x01\x12\t\n\x05INT64\x10\x02\x12\n\n\x06UINT32\x10\x03\x12\n\n\x06U\
-    INT64\x10\x04\x12\n\n\x06STRING\x10\x05\x12\n\n\x06OPTION\x10\x06\x12\n\
-    \n\x06OBJECT\x10\x07\x12\t\n\x05OTHER\x10\x08\x12\x08\n\x04VOID\x10\tb\
-    \x06proto3\
+    tionR\tfunctions\x12\x1b\n\tmeta_data\x18\x05\x20\x01(\tR\x08metaData\
+    \x12\x1a\n\x08packager\x18\x06\x20\x01(\tR\x08packager\"\xc3\x01\n\x08Fu\
+    nction\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12(\n\tparameter\
+    \x18\x02\x20\x01(\x0b2\n.ParameterR\tparameter\x12%\n\nreturnType\x18\
+    \x03\x20\x01(\x0e2\x05.TypeR\nreturnType\x12$\n\rreturnedValue\x18\x04\
+    \x20\x01(\x0cR\rreturnedValue\x12,\n\x11canRaiseException\x18\x05\x20\
+    \x01(\x08R\x11canRaiseException\":\n\tParameter\x12\x12\n\x04name\x18\
+    \x01\x20\x01(\tR\x04name\x12\x19\n\x04type\x18\x02\x20\x01(\x0e2\x05.Typ\
+    eR\x04type*x\n\x04Type\x12\t\n\x05ERROR\x10\0\x12\t\n\x05INT32\x10\x01\
+    \x12\t\n\x05INT64\x10\x02\x12\n\n\x06UINT32\x10\x03\x12\n\n\x06UINT64\
+    \x10\x04\x12\n\n\x06STRING\x10\x05\x12\n\n\x06OPTION\x10\x06\x12\n\n\x06\
+    OBJECT\x10\x07\x12\t\n\x05OTHER\x10\x08\x12\x08\n\x04VOID\x10\tb\x06prot\
+    o3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {

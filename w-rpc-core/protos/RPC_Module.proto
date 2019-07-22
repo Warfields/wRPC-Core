@@ -20,7 +20,8 @@ message Module {
     string init_script = 2;
     string additionalBoilerPlate = 3;
     repeated Function functions = 4;
-    string meta_data =5; 
+    string meta_data = 5;
+    string packager = 6;
 }
 
 message Function{

@@ -20,13 +20,13 @@ use std::sync::Mutex;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-// Since the RPC_Module.rs's are generated from proto files the rpc call fn is
-// implemented here.
+// Since the RPC_Module.rs code is generated from proto files the rpc call fn
+// is implemented here so it does not get overwritten;
 impl RPC_Module::Module {
     // Macro?
-    pub fn fn_call(fn_name: String) -> Result<JsValue, &'static str>{
+    pub fn fn_call(&self, fn_name: String, params: Vec<JsValue>) -> Result<JsValue, JsValue>{
 
-        Err("Not Implimented yet!")
+        Err(JsValue::from_str("Not Implimented yet!"))
     }
 }
 
@@ -139,7 +139,7 @@ pub fn init_proto(buf: Vec<u8>) -> Result<(), JsValue>{
             add_module(proto)?;
             Ok(())
         }
-        Err(e) => return Err(JsValue::from_str("Module Protobuf couldn't be read!"))
+        Err(_) => return Err(JsValue::from_str("Module Protobuf couldn't be read!"))
     }
 }
 
@@ -204,4 +204,10 @@ fn remove_module_from_list<'a>(module_name: String) -> Result <(), &'a str>{
     }
 
     Err("Not Good")
+}
+
+#[wasm_bindgen]
+pub fn rpc_call(module: String, function: String, params: Vec<JsValue>) -> Result<JsValue, JsValue> {
+    get_module!(module, callee);
+    callee.fn_call(function, params)
 }
