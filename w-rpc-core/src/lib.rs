@@ -64,30 +64,6 @@ macro_rules! get_module_mut {
     };
 }
 
-#[wasm_bindgen]
-pub fn init_file(module_file_name: String) -> Result<(), JsValue> {
-
-    if module_file_name.contains(".wasm") {
-        init_pure_wasm(module_file_name)
-
-    } else if module_file_name.contains(".js"){ // check if it's a node module
-        Err(JsValue::from_str("No binaries or modules could be found"))
-    } else {
-        Err(JsValue::from_str("No binaries or modules could be found"))
-    }
-    
-    // attempt to autodetect packager
-        // MVP: Go, Rust, C's
-    // set init script
-        // init the JS
-    // set additional boilerplate to call funtions
-        //
-
-    // set up functions
-
-    // set any meta data
-}
-
 // Return a web assembly instance
 #[wasm_bindgen]
 pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
@@ -219,3 +195,18 @@ pub fn rpc_call(module: String, function: String, params: Vec<JsValue>) -> Resul
     get_module_mut!(module, callee);
     callee.fn_call(function, params)
 }
+
+/* TODO
+// Returns a vector of all registered protos
+#[wasm_bindgen]
+pub fn get_module_protos() -> Vec<Vec<u8>> {
+    vec![vec![0,0]]
+}
+
+// Returns a single protobuf if a module exists
+#[wasm_bindgen]
+pub fn find_module_proto(module_name: String) -> Vec<u8> {
+
+    vec![0,0]
+}
+*/

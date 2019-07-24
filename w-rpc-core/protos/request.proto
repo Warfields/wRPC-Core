@@ -1,0 +1,13 @@
+// This Proto describes how to request a function
+syntax = "proto3";
+
+import "RPC_Module.proto";
+
+message FnRequest {
+    string functionName = 1;
+    repeated Parameter params = 2;
+}
+
+message ModuleRequest {
+    string moduleName = 1;
+}

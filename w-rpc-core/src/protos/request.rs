@@ -17,7 +17,7 @@
 #![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
-//! Generated file from `result.proto`
+//! Generated file from `request.proto`
 
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
@@ -27,81 +27,85 @@ use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
 const _PROTOBUF_VERSION_CHECK: () = ::protobuf::VERSION_2_7_0;
 
 #[derive(PartialEq,Clone,Default)]
-pub struct FnResult {
+pub struct FnRequest {
     // message fields
-    pub Result: ::std::vec::Vec<u8>,
-    pub exception: ::std::string::String,
+    pub functionName: ::std::string::String,
+    pub params: ::protobuf::RepeatedField<super::RPC_Module::Parameter>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a FnResult {
-    fn default() -> &'a FnResult {
-        <FnResult as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a FnRequest {
+    fn default() -> &'a FnRequest {
+        <FnRequest as ::protobuf::Message>::default_instance()
     }
 }
 
-impl FnResult {
-    pub fn new() -> FnResult {
+impl FnRequest {
+    pub fn new() -> FnRequest {
         ::std::default::Default::default()
     }
 
-    // bytes Result = 1;
+    // string functionName = 1;
 
 
-    pub fn get_Result(&self) -> &[u8] {
-        &self.Result
+    pub fn get_functionName(&self) -> &str {
+        &self.functionName
     }
-    pub fn clear_Result(&mut self) {
-        self.Result.clear();
+    pub fn clear_functionName(&mut self) {
+        self.functionName.clear();
     }
 
     // Param is passed by value, moved
-    pub fn set_Result(&mut self, v: ::std::vec::Vec<u8>) {
-        self.Result = v;
+    pub fn set_functionName(&mut self, v: ::std::string::String) {
+        self.functionName = v;
     }
 
     // Mutable pointer to the field.
     // If field is not initialized, it is initialized with default value first.
-    pub fn mut_Result(&mut self) -> &mut ::std::vec::Vec<u8> {
-        &mut self.Result
+    pub fn mut_functionName(&mut self) -> &mut ::std::string::String {
+        &mut self.functionName
     }
 
     // Take field
-    pub fn take_Result(&mut self) -> ::std::vec::Vec<u8> {
-        ::std::mem::replace(&mut self.Result, ::std::vec::Vec::new())
+    pub fn take_functionName(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.functionName, ::std::string::String::new())
     }
 
-    // string exception = 2;
+    // repeated .Parameter params = 2;
 
 
-    pub fn get_exception(&self) -> &str {
-        &self.exception
+    pub fn get_params(&self) -> &[super::RPC_Module::Parameter] {
+        &self.params
     }
-    pub fn clear_exception(&mut self) {
-        self.exception.clear();
+    pub fn clear_params(&mut self) {
+        self.params.clear();
     }
 
     // Param is passed by value, moved
-    pub fn set_exception(&mut self, v: ::std::string::String) {
-        self.exception = v;
+    pub fn set_params(&mut self, v: ::protobuf::RepeatedField<super::RPC_Module::Parameter>) {
+        self.params = v;
     }
 
     // Mutable pointer to the field.
-    // If field is not initialized, it is initialized with default value first.
-    pub fn mut_exception(&mut self) -> &mut ::std::string::String {
-        &mut self.exception
+    pub fn mut_params(&mut self) -> &mut ::protobuf::RepeatedField<super::RPC_Module::Parameter> {
+        &mut self.params
     }
 
     // Take field
-    pub fn take_exception(&mut self) -> ::std::string::String {
-        ::std::mem::replace(&mut self.exception, ::std::string::String::new())
+    pub fn take_params(&mut self) -> ::protobuf::RepeatedField<super::RPC_Module::Parameter> {
+        ::std::mem::replace(&mut self.params, ::protobuf::RepeatedField::new())
     }
 }
 
-impl ::protobuf::Message for FnResult {
+impl ::protobuf::Message for FnRequest {
     fn is_initialized(&self) -> bool {
+        for v in &self.params {
+            if !v.is_initialized() {
+                return false;
+            }
+        };
         true
     }
 
@@ -110,10 +114,10 @@ impl ::protobuf::Message for FnResult {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.Result)?;
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.functionName)?;
                 },
                 2 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.exception)?;
+                    ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.params)?;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -127,24 +131,27 @@ impl ::protobuf::Message for FnResult {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        if !self.Result.is_empty() {
-            my_size += ::protobuf::rt::bytes_size(1, &self.Result);
+        if !self.functionName.is_empty() {
+            my_size += ::protobuf::rt::string_size(1, &self.functionName);
         }
-        if !self.exception.is_empty() {
-            my_size += ::protobuf::rt::string_size(2, &self.exception);
-        }
+        for value in &self.params {
+            let len = value.compute_size();
+            my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
+        };
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
-        if !self.Result.is_empty() {
-            os.write_bytes(1, &self.Result)?;
+        if !self.functionName.is_empty() {
+            os.write_string(1, &self.functionName)?;
         }
-        if !self.exception.is_empty() {
-            os.write_string(2, &self.exception)?;
-        }
+        for v in &self.params {
+            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_raw_varint32(v.get_cached_size())?;
+            v.write_to_with_cached_sizes(os)?;
+        };
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -175,8 +182,8 @@ impl ::protobuf::Message for FnResult {
         Self::descriptor_static()
     }
 
-    fn new() -> FnResult {
-        FnResult::new()
+    fn new() -> FnRequest {
+        FnRequest::new()
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -187,18 +194,18 @@ impl ::protobuf::Message for FnResult {
         unsafe {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
-                    "Result",
-                    |m: &FnResult| { &m.Result },
-                    |m: &mut FnResult| { &mut m.Result },
-                ));
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                    "exception",
-                    |m: &FnResult| { &m.exception },
-                    |m: &mut FnResult| { &mut m.exception },
+                    "functionName",
+                    |m: &FnRequest| { &m.functionName },
+                    |m: &mut FnRequest| { &mut m.functionName },
                 ));
-                ::protobuf::reflect::MessageDescriptor::new::<FnResult>(
-                    "FnResult",
+                fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<super::RPC_Module::Parameter>>(
+                    "params",
+                    |m: &FnRequest| { &m.params },
+                    |m: &mut FnRequest| { &mut m.params },
+                ));
+                ::protobuf::reflect::MessageDescriptor::new::<FnRequest>(
+                    "FnRequest",
                     fields,
                     file_descriptor_proto()
                 )
@@ -206,55 +213,54 @@ impl ::protobuf::Message for FnResult {
         }
     }
 
-    fn default_instance() -> &'static FnResult {
-        static mut instance: ::protobuf::lazy::Lazy<FnResult> = ::protobuf::lazy::Lazy {
+    fn default_instance() -> &'static FnRequest {
+        static mut instance: ::protobuf::lazy::Lazy<FnRequest> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const FnResult,
+            ptr: 0 as *const FnRequest,
         };
         unsafe {
-            instance.get(FnResult::new)
+            instance.get(FnRequest::new)
         }
     }
 }
 
-impl ::protobuf::Clear for FnResult {
+impl ::protobuf::Clear for FnRequest {
     fn clear(&mut self) {
-        self.Result.clear();
-        self.exception.clear();
+        self.functionName.clear();
+        self.params.clear();
         self.unknown_fields.clear();
     }
 }
 
-impl ::std::fmt::Debug for FnResult {
+impl ::std::fmt::Debug for FnRequest {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for FnResult {
+impl ::protobuf::reflect::ProtobufValue for FnRequest {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
 #[derive(PartialEq,Clone,Default)]
-pub struct ModuleResult {
+pub struct ModuleRequest {
     // message fields
     pub moduleName: ::std::string::String,
-    pub available: bool,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
 }
 
-impl<'a> ::std::default::Default for &'a ModuleResult {
-    fn default() -> &'a ModuleResult {
-        <ModuleResult as ::protobuf::Message>::default_instance()
+impl<'a> ::std::default::Default for &'a ModuleRequest {
+    fn default() -> &'a ModuleRequest {
+        <ModuleRequest as ::protobuf::Message>::default_instance()
     }
 }
 
-impl ModuleResult {
-    pub fn new() -> ModuleResult {
+impl ModuleRequest {
+    pub fn new() -> ModuleRequest {
         ::std::default::Default::default()
     }
 
@@ -283,24 +289,9 @@ impl ModuleResult {
     pub fn take_moduleName(&mut self) -> ::std::string::String {
         ::std::mem::replace(&mut self.moduleName, ::std::string::String::new())
     }
-
-    // bool available = 2;
-
-
-    pub fn get_available(&self) -> bool {
-        self.available
-    }
-    pub fn clear_available(&mut self) {
-        self.available = false;
-    }
-
-    // Param is passed by value, moved
-    pub fn set_available(&mut self, v: bool) {
-        self.available = v;
-    }
 }
 
-impl ::protobuf::Message for ModuleResult {
+impl ::protobuf::Message for ModuleRequest {
     fn is_initialized(&self) -> bool {
         true
     }
@@ -311,13 +302,6 @@ impl ::protobuf::Message for ModuleResult {
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.moduleName)?;
-                },
-                2 => {
-                    if wire_type != ::protobuf::wire_format::WireTypeVarint {
-                        return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
-                    }
-                    let tmp = is.read_bool()?;
-                    self.available = tmp;
                 },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
@@ -334,9 +318,6 @@ impl ::protobuf::Message for ModuleResult {
         if !self.moduleName.is_empty() {
             my_size += ::protobuf::rt::string_size(1, &self.moduleName);
         }
-        if self.available != false {
-            my_size += 2;
-        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -345,9 +326,6 @@ impl ::protobuf::Message for ModuleResult {
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
         if !self.moduleName.is_empty() {
             os.write_string(1, &self.moduleName)?;
-        }
-        if self.available != false {
-            os.write_bool(2, self.available)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -379,8 +357,8 @@ impl ::protobuf::Message for ModuleResult {
         Self::descriptor_static()
     }
 
-    fn new() -> ModuleResult {
-        ModuleResult::new()
+    fn new() -> ModuleRequest {
+        ModuleRequest::new()
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
@@ -393,16 +371,11 @@ impl ::protobuf::Message for ModuleResult {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "moduleName",
-                    |m: &ModuleResult| { &m.moduleName },
-                    |m: &mut ModuleResult| { &mut m.moduleName },
+                    |m: &ModuleRequest| { &m.moduleName },
+                    |m: &mut ModuleRequest| { &mut m.moduleName },
                 ));
-                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
-                    "available",
-                    |m: &ModuleResult| { &m.available },
-                    |m: &mut ModuleResult| { &mut m.available },
-                ));
-                ::protobuf::reflect::MessageDescriptor::new::<ModuleResult>(
-                    "ModuleResult",
+                ::protobuf::reflect::MessageDescriptor::new::<ModuleRequest>(
+                    "ModuleRequest",
                     fields,
                     file_descriptor_proto()
                 )
@@ -410,43 +383,41 @@ impl ::protobuf::Message for ModuleResult {
         }
     }
 
-    fn default_instance() -> &'static ModuleResult {
-        static mut instance: ::protobuf::lazy::Lazy<ModuleResult> = ::protobuf::lazy::Lazy {
+    fn default_instance() -> &'static ModuleRequest {
+        static mut instance: ::protobuf::lazy::Lazy<ModuleRequest> = ::protobuf::lazy::Lazy {
             lock: ::protobuf::lazy::ONCE_INIT,
-            ptr: 0 as *const ModuleResult,
+            ptr: 0 as *const ModuleRequest,
         };
         unsafe {
-            instance.get(ModuleResult::new)
+            instance.get(ModuleRequest::new)
         }
     }
 }
 
-impl ::protobuf::Clear for ModuleResult {
+impl ::protobuf::Clear for ModuleRequest {
     fn clear(&mut self) {
         self.moduleName.clear();
-        self.available = false;
         self.unknown_fields.clear();
     }
 }
 
-impl ::std::fmt::Debug for ModuleResult {
+impl ::std::fmt::Debug for ModuleRequest {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
 
-impl ::protobuf::reflect::ProtobufValue for ModuleResult {
+impl ::protobuf::reflect::ProtobufValue for ModuleRequest {
     fn as_ref(&self) -> ::protobuf::reflect::ProtobufValueRef {
         ::protobuf::reflect::ProtobufValueRef::Message(self)
     }
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\x0cresult.proto\x1a\x10RPC_Module.proto\"@\n\x08FnResult\x12\x16\n\
-    \x06Result\x18\x01\x20\x01(\x0cR\x06Result\x12\x1c\n\texception\x18\x02\
-    \x20\x01(\tR\texception\"L\n\x0cModuleResult\x12\x1e\n\nmoduleName\x18\
-    \x01\x20\x01(\tR\nmoduleName\x12\x1c\n\tavailable\x18\x02\x20\x01(\x08R\
-    \tavailableb\x06proto3\
+    \n\rrequest.proto\x1a\x10RPC_Module.proto\"S\n\tFnRequest\x12\"\n\x0cfun\
+    ctionName\x18\x01\x20\x01(\tR\x0cfunctionName\x12\"\n\x06params\x18\x02\
+    \x20\x03(\x0b2\n.ParameterR\x06params\"/\n\rModuleRequest\x12\x1e\n\nmod\
+    uleName\x18\x01\x20\x01(\tR\nmoduleNameb\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {

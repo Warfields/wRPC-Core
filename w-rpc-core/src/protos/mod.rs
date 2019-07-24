@@ -37,7 +37,8 @@ impl RPC_Module::Module {
             funct.mut_parameter().get_mut(i).unwrap().set_data(param_data);
         }
 
-        // Run RPC
+        // Run RPC (Send Proto to Remote module)
+
 
         Err(JsValue::from_str("Not Implimented yet!"))
     }

@@ -1,6 +1,13 @@
 syntax = "proto3";
 
-message Result {
+import "RPC_Module.proto";
+
+message FnResult {
     bytes Result = 1;
     string exception = 2;
+}
+
+message ModuleResult {
+    string moduleName = 1;
+    bool available = 2;
 }
