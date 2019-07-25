@@ -231,6 +231,18 @@ pub fn find_module_proto(module_name: String) -> Result<Vec<u8>, JsValue> {
 // Returns True or False on if a module exists
 #[wasm_bindgen]
 pub fn find_module_bool() -> bool {
-    panic!("Not implimented");
-    return false;
+            use std::ops::DerefMut;
+        let list = &mut GLOBAL_MODULE_LIST.lock().unwrap();
+        let list = DerefMut::deref_mut(list);
+        let mut loop_num: u32 = 0;
+        let mut found = false;
+
+        for item in list{
+            if item.get_module_name() == $name {
+                found = true;
+                break;
+            }
+            loop_num += 1
+        }
+        found
 }
