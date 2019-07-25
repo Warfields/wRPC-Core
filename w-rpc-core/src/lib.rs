@@ -54,6 +54,7 @@ macro_rules! get_module {
     };
 }
 
+/*
 macro_rules! get_module_mut {
     ($name:expr, $returned_var:ident) => {
         use std::ops::DerefMut;
@@ -76,6 +77,7 @@ macro_rules! get_module_mut {
         let $returned_var = &mut GLOBAL_MODULE_LIST.lock().unwrap()[loop_num as usize];
     };
 }
+*/
 
 // Return a web assembly instance
 #[wasm_bindgen]
@@ -205,19 +207,10 @@ fn remove_module_from_list<'a>(module_name: String) -> Result <(), &'a str>{
 
 #[wasm_bindgen]
 pub fn rpc_call(module: String, function: String, params: Vec<JsValue>) -> Result<JsValue, JsValue> {
-    get_module_mut!(module, callee);
+    get_module!(module, callee);
     callee.fn_call(function, params)
 }
 
-/* TODO
-// Returns a vector of all registered protos
-#[wasm_bindgen]
-pub fn get_module_protos() -> Vec<Vec<u8>> {
-    vec![vec![0,0]]
-}
-*/
-// Returns a single protobuf if a module exists that describes the module. See
-// protos/RPC_Modules.proto
 #[wasm_bindgen]
 pub fn find_module_proto(module_name: String) -> Result<Vec<u8>, JsValue> {
     get_module!(module_name, found_module);
@@ -230,7 +223,7 @@ pub fn find_module_proto(module_name: String) -> Result<Vec<u8>, JsValue> {
 
 // Returns True or False on if a module exists
 #[wasm_bindgen]
-pub fn find_module_bool() -> bool {
+pub fn find_module_bool(name: String) -> bool {
             use std::ops::DerefMut;
         let list = &mut GLOBAL_MODULE_LIST.lock().unwrap();
         let list = DerefMut::deref_mut(list);
@@ -238,7 +231,7 @@ pub fn find_module_bool() -> bool {
         let mut found = false;
 
         for item in list{
-            if item.get_module_name() == $name {
+            if item.get_module_name() == name {
                 found = true;
                 break;
             }

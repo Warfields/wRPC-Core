@@ -4,8 +4,9 @@ syntax = "proto3";
 import "RPC_Module.proto";
 
 message FnRequest {
-    string functionName = 1;
-    repeated Parameter params = 2;
+    string moduleName = 1;
+    string functionName = 2;
+    repeated Parameter params = 3;
 }
 
 message ModuleRequest {

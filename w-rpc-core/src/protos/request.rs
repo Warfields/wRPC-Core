@@ -29,6 +29,7 @@ const _PROTOBUF_VERSION_CHECK: () = ::protobuf::VERSION_2_8_0;
 #[derive(PartialEq,Clone,Default)]
 pub struct FnRequest {
     // message fields
+    pub moduleName: ::std::string::String,
     pub functionName: ::std::string::String,
     pub params: ::protobuf::RepeatedField<super::RPC_Module::Parameter>,
     // special fields
@@ -47,7 +48,33 @@ impl FnRequest {
         ::std::default::Default::default()
     }
 
-    // string functionName = 1;
+    // string moduleName = 1;
+
+
+    pub fn get_moduleName(&self) -> &str {
+        &self.moduleName
+    }
+    pub fn clear_moduleName(&mut self) {
+        self.moduleName.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_moduleName(&mut self, v: ::std::string::String) {
+        self.moduleName = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_moduleName(&mut self) -> &mut ::std::string::String {
+        &mut self.moduleName
+    }
+
+    // Take field
+    pub fn take_moduleName(&mut self) -> ::std::string::String {
+        ::std::mem::replace(&mut self.moduleName, ::std::string::String::new())
+    }
+
+    // string functionName = 2;
 
 
     pub fn get_functionName(&self) -> &str {
@@ -73,7 +100,7 @@ impl FnRequest {
         ::std::mem::replace(&mut self.functionName, ::std::string::String::new())
     }
 
-    // repeated .Parameter params = 2;
+    // repeated .Parameter params = 3;
 
 
     pub fn get_params(&self) -> &[super::RPC_Module::Parameter] {
@@ -114,9 +141,12 @@ impl ::protobuf::Message for FnRequest {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.functionName)?;
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.moduleName)?;
                 },
                 2 => {
+                    ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.functionName)?;
+                },
+                3 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.params)?;
                 },
                 _ => {
@@ -131,8 +161,11 @@ impl ::protobuf::Message for FnRequest {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
+        if !self.moduleName.is_empty() {
+            my_size += ::protobuf::rt::string_size(1, &self.moduleName);
+        }
         if !self.functionName.is_empty() {
-            my_size += ::protobuf::rt::string_size(1, &self.functionName);
+            my_size += ::protobuf::rt::string_size(2, &self.functionName);
         }
         for value in &self.params {
             let len = value.compute_size();
@@ -144,11 +177,14 @@ impl ::protobuf::Message for FnRequest {
     }
 
     fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream) -> ::protobuf::ProtobufResult<()> {
+        if !self.moduleName.is_empty() {
+            os.write_string(1, &self.moduleName)?;
+        }
         if !self.functionName.is_empty() {
-            os.write_string(1, &self.functionName)?;
+            os.write_string(2, &self.functionName)?;
         }
         for v in &self.params {
-            os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
+            os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
         };
@@ -195,6 +231,11 @@ impl ::protobuf::Message for FnRequest {
             descriptor.get(|| {
                 let mut fields = ::std::vec::Vec::new();
                 fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+                    "moduleName",
+                    |m: &FnRequest| { &m.moduleName },
+                    |m: &mut FnRequest| { &mut m.moduleName },
+                ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
                     "functionName",
                     |m: &FnRequest| { &m.functionName },
                     |m: &mut FnRequest| { &mut m.functionName },
@@ -226,6 +267,7 @@ impl ::protobuf::Message for FnRequest {
 
 impl ::protobuf::Clear for FnRequest {
     fn clear(&mut self) {
+        self.moduleName.clear();
         self.functionName.clear();
         self.params.clear();
         self.unknown_fields.clear();
@@ -414,10 +456,11 @@ impl ::protobuf::reflect::ProtobufValue for ModuleRequest {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\rrequest.proto\x1a\x10RPC_Module.proto\"S\n\tFnRequest\x12\"\n\x0cfun\
-    ctionName\x18\x01\x20\x01(\tR\x0cfunctionName\x12\"\n\x06params\x18\x02\
-    \x20\x03(\x0b2\n.ParameterR\x06params\"/\n\rModuleRequest\x12\x1e\n\nmod\
-    uleName\x18\x01\x20\x01(\tR\nmoduleNameb\x06proto3\
+    \n\rrequest.proto\x1a\x10RPC_Module.proto\"s\n\tFnRequest\x12\x1e\n\nmod\
+    uleName\x18\x01\x20\x01(\tR\nmoduleName\x12\"\n\x0cfunctionName\x18\x02\
+    \x20\x01(\tR\x0cfunctionName\x12\"\n\x06params\x18\x03\x20\x03(\x0b2\n.P\
+    arameterR\x06params\"/\n\rModuleRequest\x12\x1e\n\nmoduleName\x18\x01\
+    \x20\x01(\tR\nmoduleNameb\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
