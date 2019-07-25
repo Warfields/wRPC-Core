@@ -6,6 +6,7 @@ mod protos;
 
 use wasm_bindgen::prelude::*;
 use protos::RPC_Module;
+use protobuf::Message;
 use js_sys::{Uint8Array, WebAssembly};
 use std::io::prelude::*;
 use std::fs;
@@ -219,8 +220,11 @@ pub fn get_module_protos() -> Vec<Vec<u8>> {
 // protos/RPC_Modules.proto
 #[wasm_bindgen]
 pub fn find_module_proto(module_name: String) -> Result<Vec<u8>, JsValue> {
-    get_module!(module_name, Exampl );
-    Ok(vec![0,0])
+    get_module!(module_name, found_module);
+    let mut buf : Vec<u8> = Vec::new();
+    found_module.write_to_writer(&mut buf)
+        .expect("Somehow The proto could not be converted to Message");
+    Ok(buf)
 }
 
 
