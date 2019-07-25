@@ -6,7 +6,7 @@ edition = "2018"
 build = "build.rs"
 repository = "https://github.com/Warfields/wRPC-Core"
 description = "RPC Framework for Webassembly"
-lisence = "MIT and Apache License 2.0"
+license = "MIT and Apache License 2.0"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -16,7 +16,7 @@ default = ["console_error_panic_hook"]
 
 [dependencies]
 wasm-bindgen = "0.2"
-protobuf = { version = "2.7", features = ["with-bytes"] }
+protobuf = { version = "2.8", features = ["with-bytes"] }
 js-sys = "0.3"
 lazy_static = "1.3"
 
@@ -24,7 +24,7 @@ lazy_static = "1.3"
 # logging them with `console.error`. This is great for development, but requires
 # all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
 # code size when deploying.
-console_error_panic_hook = { version = "0.1.1", optional = true }
+console_error_panic_hook = { version = "0.1", optional = true }
 
 # `wee_alloc` is a tiny allocator for wasm that is only ~1K in code size
 # compared to the default allocator's ~10K. It is slower than the default
@@ -37,7 +37,7 @@ wee_alloc = { version = "0.4.2", optional = true }
 wasm-bindgen-test = "0.2"
 
 [build-dependencies]
-protoc-rust = "2.7"
+protoc-rust = "2.8"
 glob = "0.3"
 
 [profile.release]

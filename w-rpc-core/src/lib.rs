@@ -36,13 +36,19 @@ macro_rules! get_module {
         let list = &mut GLOBAL_MODULE_LIST.lock().unwrap();
         let list = DerefMut::deref_mut(list);
         let mut loop_num: u32 = 0;
+        let mut found = false;
 
         for item in list{
             if item.get_module_name() == $name {
+                found = true;
                 break;
             }
             loop_num += 1
         }
+        if !found {
+            return Err(JsValue::from_str("Module Not Found"));
+        }
+
         let $returned_var = &GLOBAL_MODULE_LIST.lock().unwrap()[loop_num as usize];
     };
 }
@@ -53,13 +59,19 @@ macro_rules! get_module_mut {
         let list = &mut GLOBAL_MODULE_LIST.lock().unwrap();
         let list = DerefMut::deref_mut(list);
         let mut loop_num: u32 = 0;
+        let mut found = false;
 
         for item in list{
             if item.get_module_name() == $name {
+                found = true;
                 break;
             }
             loop_num += 1
         }
+        if !found {
+            return Err(JsValue::from_str("Module Not Found"));
+        }
+
         let $returned_var = &mut GLOBAL_MODULE_LIST.lock().unwrap()[loop_num as usize];
     };
 }
@@ -202,11 +214,19 @@ pub fn rpc_call(module: String, function: String, params: Vec<JsValue>) -> Resul
 pub fn get_module_protos() -> Vec<Vec<u8>> {
     vec![vec![0,0]]
 }
-
-// Returns a single protobuf if a module exists
-#[wasm_bindgen]
-pub fn find_module_proto(module_name: String) -> Vec<u8> {
-
-    vec![0,0]
-}
 */
+// Returns a single protobuf if a module exists that describes the module. See
+// protos/RPC_Modules.proto
+#[wasm_bindgen]
+pub fn find_module_proto(module_name: String) -> Result<Vec<u8>, JsValue> {
+    get_module!(module_name, Exampl );
+    Ok(vec![0,0])
+}
+
+
+// Returns True or False on if a module exists
+#[wasm_bindgen]
+pub fn find_module_bool() -> bool {
+    panic!("Not implimented");
+    return false;
+}
