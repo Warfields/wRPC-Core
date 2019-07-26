@@ -42,14 +42,32 @@ impl RPC_Module::Module {
             let mut param_data: Vec<u8> = Vec::new();
 
             param_temp.copy_to(&mut param_data);
-
             request_proto.mut_params().get_mut(i).unwrap().set_data(param_data);
         }
 
         // Run RPC (Send Proto to Remote module)
+        if self.pure_wasm {
+            // Somehow the parameter objects need to get sent through to the
+            // eval environment. JSON?
+            js_sys::eval(self.gen_boilerplate(fn_name))
+        } else {
+            self.wasm_call(fn_name, params)
+        }
+        // Two options: Stubs or send handling code in intial code?
+        // pros / cons...
+        // use js-sys::eval()
+    }
 
+    fn wasm_call(&self, fn_name: String, params: Vec<JsValue>) -> Result<JsValue, JsValue>{
+        Err(JsValue::from_str("Not implimented"))
+    }
 
-        Err(JsValue::from_str("Not Implimented yet!"))
+    fn gen_boilerplate(&self, function: String) -> &'static str{
+        "Howdy"
+    }
+
+    pub fn init(&mut self) -> Result<(), &'static str> {
+        Ok(())
     }
 }
 

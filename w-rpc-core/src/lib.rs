@@ -79,7 +79,7 @@ macro_rules! get_module_mut {
 }
 */
 
-// Return a web assembly instance
+// TODO Creates a WRPC Module & Proto based on a read .wasm file
 #[wasm_bindgen]
 pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
     // get bytes from wasm
@@ -126,6 +126,36 @@ pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
     
 }
 
+// TODO Creates a WRPC Module & Proto based on bytes
+#[wasm_bindgen]
+pub fn init_pure_wasm_bytes(bytes: Vec<u8>, name: String) -> Result<(), JsValue>{
+
+    // Note that `Uint8Array::view` is somewhat dangerous (hence the
+    // `unsafe`!). This is creating a raw view into our module's
+    // `WebAssembly.Memory` buffer, but if we allocate more pages for ourself
+    // (aka do a memory allocation in Rust) it'll cause the buffer to change,
+    // causing the `Uint8Array` to be invalid.
+    //
+    // As a result, after `Uint8Array::view` we have to be very careful not to
+    // do any memory allocations before it's dropped.
+
+    let wasm = unsafe {
+        let array = Uint8Array::view(bytes.as_slice());
+        WebAssembly::Module::new(array.as_ref())?
+    };
+
+    // Todo finish packing module params
+    create_module(&name)?;
+    // get new module
+
+    get_module!(name, ohea);
+    println!("{}", ohea.get_module_name());
+
+    Err(JsValue::from_str("Not implemented!"))
+
+    // add wasm and how to get to it
+}
+
 //Todo
 #[wasm_bindgen]
 pub fn init_proto(buf: Vec<u8>) -> Result<(), JsValue>{
@@ -140,12 +170,16 @@ pub fn init_proto(buf: Vec<u8>) -> Result<(), JsValue>{
         }
         Err(_) => return Err(JsValue::from_str("Module Protobuf couldn't be read!"))
     }
+
 }
 
-fn add_module(module: RPC_Module::Module ) -> Result <(), &'static str> {
-    let name = module.get_module_name().clone();
+fn add_module(mut module: RPC_Module::Module ) -> Result <(), &'static str> {
+    // Initiate The Module
+    module.init()?;
 
+    let name = module.get_module_name().clone();
     let module_names = &GLOBAL_MODULE_NAMES.lock().unwrap().clone();
+
     for existing_name in module_names {
         if *name == *existing_name {
             return Err("Module with that name exists")
@@ -224,10 +258,9 @@ pub fn find_module_proto(module_name: String) -> Result<Vec<u8>, JsValue> {
 // Returns True or False on if a module exists
 #[wasm_bindgen]
 pub fn find_module_bool(name: String) -> bool {
-            use std::ops::DerefMut;
+        use std::ops::DerefMut;
         let list = &mut GLOBAL_MODULE_LIST.lock().unwrap();
         let list = DerefMut::deref_mut(list);
-        let mut loop_num: u32 = 0;
         let mut found = false;
 
         for item in list{
@@ -235,7 +268,6 @@ pub fn find_module_bool(name: String) -> bool {
                 found = true;
                 break;
             }
-            loop_num += 1
         }
         found
 }
