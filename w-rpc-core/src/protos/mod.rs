@@ -3,13 +3,16 @@ pub mod packager;
 pub mod result;
 pub mod request;
 
-
 use wasm_bindgen::prelude::*;
 use js_sys::Uint8Array;
 
 // Since the RPC_Module.rs code is generated from proto files the rpc call fn
 // is implemented here so it does not get overwritten;
 impl RPC_Module::Module {
+    // Create Global Module List?
+    // Refactor everything...
+    // Add a u32 as a pointer
+    // Associate the type
     pub fn fn_call(&self, fn_name: String, params: Vec<JsValue>) -> Result<JsValue, JsValue>{
         // check if function exists
         let mut exists = false;
@@ -30,8 +33,6 @@ impl RPC_Module::Module {
         let mut request_proto = request::FnRequest::new();
         request_proto.set_params(funct.parameter.clone());
 
-
-        
         // Set parameter values
         if funct.get_parameter().len() != params.len(){
             return Err(JsValue::from_str("Parameter Length Missmatch"));
@@ -67,7 +68,24 @@ impl RPC_Module::Module {
     }
 
     pub fn init(&mut self) -> Result<(), &'static str> {
-        Ok(())
+        if self.pure_wasm {
+            // Init Wasm Module
+            let result = super::init_pure_wasm_bytes(&self.wasm_binary);
+            match result {
+                Ok(instance) => {
+                    // TODO do shit here
+                    // Global list of initiated Wasm Modules?
+                    Ok(())
+                }
+                Err(_) => Err("Module Could not be found")
+            }
+            
+        } else {
+            match js_sys::eval(self.init_script.as_str()){
+                Ok(_) => Ok(()),
+                Err(_) => Err("Init script threw an exception")
+            }
+        }
     }
 }
 

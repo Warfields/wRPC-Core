@@ -7,7 +7,7 @@ mod protos;
 use wasm_bindgen::prelude::*;
 use protos::RPC_Module;
 use protobuf::Message;
-use js_sys::{Uint8Array, WebAssembly};
+use js_sys::{Uint8Array, WebAssembly, Object};
 use std::io::prelude::*;
 use std::fs;
 
@@ -127,8 +127,7 @@ pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
 }
 
 // TODO Creates a WRPC Module & Proto based on bytes
-#[wasm_bindgen]
-pub fn init_pure_wasm_bytes(bytes: Vec<u8>, name: String) -> Result<(), JsValue>{
+fn init_pure_wasm_bytes(bytes: &Vec<u8>) -> Result<WebAssembly::Instance, JsValue>{
 
     // Note that `Uint8Array::view` is somewhat dangerous (hence the
     // `unsafe`!). This is creating a raw view into our module's
@@ -144,16 +143,8 @@ pub fn init_pure_wasm_bytes(bytes: Vec<u8>, name: String) -> Result<(), JsValue>
         WebAssembly::Module::new(array.as_ref())?
     };
 
-    // Todo finish packing module params
-    create_module(&name)?;
-    // get new module
-
-    get_module!(name, ohea);
-    println!("{}", ohea.get_module_name());
-
-    Err(JsValue::from_str("Not implemented!"))
-
-    // add wasm and how to get to it
+    let instance = WebAssembly::Instance::new(&wasm, &Object::new())?;
+    Ok(instance)
 }
 
 //Todo

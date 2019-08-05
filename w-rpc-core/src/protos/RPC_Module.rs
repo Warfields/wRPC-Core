@@ -36,6 +36,7 @@ pub struct Module {
     pub meta_data: ::std::string::String,
     pub packager: ::std::string::String,
     pub pure_wasm: bool,
+    pub wasm_binary: ::std::vec::Vec<u8>,
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
     pub cached_size: ::protobuf::CachedSize,
@@ -221,6 +222,32 @@ impl Module {
     pub fn set_pure_wasm(&mut self, v: bool) {
         self.pure_wasm = v;
     }
+
+    // bytes wasm_binary = 8;
+
+
+    pub fn get_wasm_binary(&self) -> &[u8] {
+        &self.wasm_binary
+    }
+    pub fn clear_wasm_binary(&mut self) {
+        self.wasm_binary.clear();
+    }
+
+    // Param is passed by value, moved
+    pub fn set_wasm_binary(&mut self, v: ::std::vec::Vec<u8>) {
+        self.wasm_binary = v;
+    }
+
+    // Mutable pointer to the field.
+    // If field is not initialized, it is initialized with default value first.
+    pub fn mut_wasm_binary(&mut self) -> &mut ::std::vec::Vec<u8> {
+        &mut self.wasm_binary
+    }
+
+    // Take field
+    pub fn take_wasm_binary(&mut self) -> ::std::vec::Vec<u8> {
+        ::std::mem::replace(&mut self.wasm_binary, ::std::vec::Vec::new())
+    }
 }
 
 impl ::protobuf::Message for Module {
@@ -262,6 +289,9 @@ impl ::protobuf::Message for Module {
                     let tmp = is.read_bool()?;
                     self.pure_wasm = tmp;
                 },
+                8 => {
+                    ::protobuf::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.wasm_binary)?;
+                },
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
                 },
@@ -296,6 +326,9 @@ impl ::protobuf::Message for Module {
         if self.pure_wasm != false {
             my_size += 2;
         }
+        if !self.wasm_binary.is_empty() {
+            my_size += ::protobuf::rt::bytes_size(8, &self.wasm_binary);
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
@@ -324,6 +357,9 @@ impl ::protobuf::Message for Module {
         }
         if self.pure_wasm != false {
             os.write_bool(7, self.pure_wasm)?;
+        }
+        if !self.wasm_binary.is_empty() {
+            os.write_bytes(8, &self.wasm_binary)?;
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
@@ -402,6 +438,11 @@ impl ::protobuf::Message for Module {
                     |m: &Module| { &m.pure_wasm },
                     |m: &mut Module| { &mut m.pure_wasm },
                 ));
+                fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+                    "wasm_binary",
+                    |m: &Module| { &m.wasm_binary },
+                    |m: &mut Module| { &mut m.wasm_binary },
+                ));
                 ::protobuf::reflect::MessageDescriptor::new::<Module>(
                     "Module",
                     fields,
@@ -431,6 +472,7 @@ impl ::protobuf::Clear for Module {
         self.meta_data.clear();
         self.packager.clear();
         self.pure_wasm = false;
+        self.wasm_binary.clear();
         self.unknown_fields.clear();
     }
 }
@@ -1095,24 +1137,24 @@ impl ::protobuf::reflect::ProtobufValue for Type {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\x10RPC_Module.proto\"\xf1\x01\n\x06Module\x12\x1f\n\x0bmodule_name\
+    \n\x10RPC_Module.proto\"\x92\x02\n\x06Module\x12\x1f\n\x0bmodule_name\
     \x18\x01\x20\x01(\tR\nmoduleName\x12\x1f\n\x0binit_script\x18\x02\x20\
     \x01(\tR\ninitScript\x12&\n\x0fJS_boiler_plate\x18\x03\x20\x01(\tR\rJSBo\
     ilerPlate\x12'\n\tfunctions\x18\x04\x20\x03(\x0b2\t.FunctionR\tfunctions\
     \x12\x1b\n\tmeta_data\x18\x05\x20\x01(\tR\x08metaData\x12\x1a\n\x08packa\
     ger\x18\x06\x20\x01(\tR\x08packager\x12\x1b\n\tpure_wasm\x18\x07\x20\x01\
-    (\x08R\x08pureWasm\"\xc3\x01\n\x08Function\x12\x12\n\x04name\x18\x01\x20\
-    \x01(\tR\x04name\x12(\n\tparameter\x18\x02\x20\x03(\x0b2\n.ParameterR\tp\
-    arameter\x12%\n\nreturnType\x18\x03\x20\x01(\x0e2\x05.TypeR\nreturnType\
-    \x12$\n\rreturnedValue\x18\x04\x20\x01(\x0cR\rreturnedValue\x12,\n\x11ca\
-    nRaiseException\x18\x05\x20\x01(\x08R\x11canRaiseException\"N\n\tParamet\
-    er\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04name\x12\x19\n\x04type\x18\
-    \x02\x20\x01(\x0e2\x05.TypeR\x04type\x12\x12\n\x04data\x18\x03\x20\x01(\
-    \x0cR\x04data*x\n\x04Type\x12\t\n\x05ERROR\x10\0\x12\t\n\x05INT32\x10\
-    \x01\x12\t\n\x05INT64\x10\x02\x12\n\n\x06UINT32\x10\x03\x12\n\n\x06UINT6\
-    4\x10\x04\x12\n\n\x06STRING\x10\x05\x12\n\n\x06OPTION\x10\x06\x12\n\n\
-    \x06OBJECT\x10\x07\x12\t\n\x05OTHER\x10\x08\x12\x08\n\x04VOID\x10\tb\x06\
-    proto3\
+    (\x08R\x08pureWasm\x12\x1f\n\x0bwasm_binary\x18\x08\x20\x01(\x0cR\nwasmB\
+    inary\"\xc3\x01\n\x08Function\x12\x12\n\x04name\x18\x01\x20\x01(\tR\x04n\
+    ame\x12(\n\tparameter\x18\x02\x20\x03(\x0b2\n.ParameterR\tparameter\x12%\
+    \n\nreturnType\x18\x03\x20\x01(\x0e2\x05.TypeR\nreturnType\x12$\n\rretur\
+    nedValue\x18\x04\x20\x01(\x0cR\rreturnedValue\x12,\n\x11canRaiseExceptio\
+    n\x18\x05\x20\x01(\x08R\x11canRaiseException\"N\n\tParameter\x12\x12\n\
+    \x04name\x18\x01\x20\x01(\tR\x04name\x12\x19\n\x04type\x18\x02\x20\x01(\
+    \x0e2\x05.TypeR\x04type\x12\x12\n\x04data\x18\x03\x20\x01(\x0cR\x04data*\
+    x\n\x04Type\x12\t\n\x05ERROR\x10\0\x12\t\n\x05INT32\x10\x01\x12\t\n\x05I\
+    NT64\x10\x02\x12\n\n\x06UINT32\x10\x03\x12\n\n\x06UINT64\x10\x04\x12\n\n\
+    \x06STRING\x10\x05\x12\n\n\x06OPTION\x10\x06\x12\n\n\x06OBJECT\x10\x07\
+    \x12\t\n\x05OTHER\x10\x08\x12\x08\n\x04VOID\x10\tb\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {

@@ -23,6 +23,7 @@ message Module {
     string meta_data = 5;
     string packager = 6;
     bool pure_wasm = 7;
+    bytes wasm_binary = 8;
 }
 
 message Function{
