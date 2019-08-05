@@ -74,7 +74,9 @@ impl RPC_Module::Module {
             match result {
                 Ok(instance) => {
                     // TODO do shit here
-                    // Global list of initiated Wasm Modules?
+                    // Global list of initiated Wasm Modules? NOPE IT FREAKS THE HELL OUT!
+                    // Then Impliment another macro for getting the module?
+
                     Ok(())
                 }
                 Err(_) => Err("Module Could not be found")

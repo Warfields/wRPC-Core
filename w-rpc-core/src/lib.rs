@@ -10,21 +10,29 @@ use protobuf::Message;
 use js_sys::{Uint8Array, WebAssembly, Object};
 use std::io::prelude::*;
 use std::fs;
+use std::alloc::{GlobalAlloc, Layout, alloc};
+use std::ptr::null_mut;
 
 #[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate cfg_if;
 use std::sync::Mutex;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+cfg_if! {
+    if #[cfg(feature = "wee_alloc")] {
+        #[global_allocator]
+        static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+    }
+}
 
 // Create Global Module list
 lazy_static!{
     static ref GLOBAL_MODULE_LIST: Mutex<Vec::<RPC_Module::Module>>
         = Mutex::new(Vec::<RPC_Module::Module>::new());
+
     static ref GLOBAL_MODULE_NAMES: Mutex<Vec::<String>> 
         = Mutex::new(Vec::<String>::new());
 }
