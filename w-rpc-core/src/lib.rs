@@ -134,6 +134,23 @@ pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
     
 }
 
+// Make bindings to external JS Module for tracking of 
+#[wasm_bindgen(module = "src/js/shim.js")]
+extern "C" {
+    type WasmBinList;
+
+    #[wasm_bindgen(constructor)]
+    fn new() -> WasmBinList;
+
+    #[wasm_bindgen(catch, method, structural, indexing_getter)]
+    fn get_instance(this: &WasmBinList, name: String) -> Result<WebAssembly::Instance, JsValue>;
+
+    #[wasm_bindgen(method, structural, indexing_setter)]
+    fn add_module(this: &WasmBinList, instance: WebAssembly::Instance, name: String);
+
+
+}
+
 // TODO Creates a WRPC Module & Proto based on bytes
 fn init_pure_wasm_bytes(bytes: &Vec<u8>) -> Result<WebAssembly::Instance, JsValue>{
 
@@ -252,7 +269,6 @@ pub fn find_module_proto(module_name: String) -> Result<Vec<u8>, JsValue> {
         .expect("Somehow The proto could not be converted to Message");
     Ok(buf)
 }
-
 
 // Returns True or False on if a module exists
 #[wasm_bindgen]
