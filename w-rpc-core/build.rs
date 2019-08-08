@@ -1,8 +1,11 @@
 extern crate protoc_rust;
+
 use protoc_rust::Customize;
+use std::fs;
 
 fn main() {
 
+    // Parse Proto buffs
     protoc_rust::run(protoc_rust::Args {
         out_dir: "src/protos",
         input: &["protos/RPC_Module.proto", "protos/result.proto", 
@@ -12,5 +15,7 @@ fn main() {
         ..Default::default()
         },
     }).expect("protoc");
+
+
                 
 }
