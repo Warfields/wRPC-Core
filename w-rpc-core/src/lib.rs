@@ -28,6 +28,22 @@ cfg_if! {
     }
 }
 
+// Make bindings to external JS Module for tracking of
+// TODO: Refactor to use the JS Module to do all of the pure WASM interactions 
+#[wasm_bindgen(module = "src/js/shim.js")]
+extern "C" {
+    type WasmBinList;
+
+    #[wasm_bindgen(constructor)]
+    fn new() -> WasmBinList;
+
+    
+    #[wasm_bindgen(method, indexing_setter)]
+    fn add_module(this: &WasmBinList, instance: WebAssembly::Instance, name: String);
+
+
+}
+
 // Create Global Module list
 lazy_static!{
     static ref GLOBAL_MODULE_LIST: Mutex<Vec::<RPC_Module::Module>>
@@ -35,6 +51,9 @@ lazy_static!{
 
     static ref GLOBAL_MODULE_NAMES: Mutex<Vec::<String>> 
         = Mutex::new(Vec::<String>::new());
+
+    static ref bin_list: WasmBinList
+        = WasmBinList::new();
 }
 
 // To get rid of the borrowing and lifetime problems that making this a
@@ -132,23 +151,6 @@ pub fn init_pure_wasm(file_name: String) -> Result<(), JsValue>{
 
 
     
-}
-
-// Make bindings to external JS Module for tracking of 
-#[wasm_bindgen(module = "src/js/shim.js")]
-extern "C" {
-    type WasmBinList;
-
-    #[wasm_bindgen(constructor)]
-    fn new() -> WasmBinList;
-
-    #[wasm_bindgen(catch, method, structural, indexing_getter)]
-    fn get_instance(this: &WasmBinList, name: String) -> Result<WebAssembly::Instance, JsValue>;
-
-    #[wasm_bindgen(method, structural, indexing_setter)]
-    fn add_module(this: &WasmBinList, instance: WebAssembly::Instance, name: String);
-
-
 }
 
 // TODO Creates a WRPC Module & Proto based on bytes
